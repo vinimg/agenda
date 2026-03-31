@@ -54,7 +54,7 @@ export function TaskForm({ onClose, defaultDate }: Props) {
   return (
     <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center">
       <div className="absolute inset-0 bg-black/60" onClick={onClose} />
-      <div className="relative bg-[#16181c] border border-[#2f3336] rounded-t-2xl md:rounded-2xl w-full md:max-w-md p-5">
+      <div className="relative bg-[#16181c] border border-[#2f3336] rounded-t-2xl md:rounded-2xl w-full md:max-w-md p-5 max-h-[90dvh] overflow-y-auto">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-[#e7e9ea] font-semibold">{editing ? 'Edit Task' : 'New Task'}</h2>
           <button onClick={onClose} className="text-[#71767b] hover:text-[#e7e9ea]">

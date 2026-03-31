@@ -7,8 +7,21 @@ import { TaskForm } from '@/components/tasks/TaskForm'
 import { scoreTask } from '@/services/priorityScore'
 import type { Task } from '@/models'
 
+function SkeletonRows() {
+  return (
+    <div className="border border-[#2f3336] rounded-xl overflow-hidden">
+      {[1, 2, 3].map(i => (
+        <div key={i} className="flex items-center gap-3 px-4 py-3 border-b border-[#2f3336] last:border-0">
+          <div className="w-5 h-5 rounded-full bg-[#2f3336] animate-pulse shrink-0" />
+          <div className="flex-1 h-4 rounded bg-[#2f3336] animate-pulse" />
+        </div>
+      ))}
+    </div>
+  )
+}
+
 export function TasksPage() {
-  const { tasks, load } = useTaskStore()
+  const { tasks, load, loading } = useTaskStore()
   const { openTaskModal, closeTaskModal, taskModalOpen } = useUIStore()
 
   useEffect(() => { load() }, [])
@@ -74,8 +87,12 @@ export function TasksPage() {
 
       <DoneSection items={done} />
 
-      {tasks.length === 0 && (
-        <p className="text-[#536471] text-sm text-center py-16">No tasks yet</p>
+      {loading && <SkeletonRows />}
+      {!loading && tasks.length === 0 && (
+        <div className="flex flex-col items-center py-16 text-[#71767b]">
+          <span className="text-3xl mb-3">📋</span>
+          <p className="text-sm">Nenhuma tarefa ainda. Toque em + para criar.</p>
+        </div>
       )}
 
       <button

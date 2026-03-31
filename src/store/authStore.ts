@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import type { User, Session } from '@supabase/supabase-js'
 import { supabase, isOfflineMode } from '@/lib/supabase'
+import { pullFromSupabase } from '@/services/sync'
 
 interface AuthState {
   user: User | null
@@ -24,6 +25,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     }
     const { data: { session } } = await supabase.auth.getSession()
     set({ user: session?.user ?? null, session, loading: false })
+    if (session?.user) pullFromSupabase(session.user.id)
     supabase.auth.onAuthStateChange((_event, session) => {
       set({ user: session?.user ?? null, session })
     })
@@ -31,7 +33,8 @@ export const useAuthStore = create<AuthState>((set) => ({
 
   signIn: async (email, password) => {
     if (!supabase) return 'Supabase not configured'
-    const { error } = await supabase.auth.signInWithPassword({ email, password })
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+    if (!error && data.user) pullFromSupabase(data.user.id)
     return error?.message ?? null
   },
 

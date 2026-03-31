@@ -18,7 +18,7 @@ function NavItem({ to, icon: Icon, label }: { to: string; icon: React.ElementTyp
       className={({ isActive }) =>
         cn(
           'flex items-center gap-3 px-3 py-3 rounded-full transition-colors text-[15px] font-medium',
-          'hover:bg-[#1e2127]',
+          'hover:bg-[#1e2127] active:scale-95',
           isActive ? 'text-[#e7e9ea]' : 'text-[#71767b]',
         )
       }
@@ -42,12 +42,12 @@ export function AppShell() {
       </nav>
 
       {/* Main content */}
-      <main className="flex-1 overflow-y-auto">
+      <main className="flex-1 overflow-y-auto pb-16 md:pb-0">
         <Outlet />
       </main>
 
       {/* Bottom nav — mobile */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 flex border-t border-[#2f3336] bg-black z-50">
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 flex border-t border-[#2f3336] bg-black/95 backdrop-blur-sm z-50" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
         {navItems.map(({ to, icon: Icon, label }) => (
           <NavLink
             key={to}
@@ -55,13 +55,19 @@ export function AppShell() {
             end={to === '/'}
             className={({ isActive }) =>
               cn(
-                'flex-1 flex flex-col items-center py-3 gap-0.5 text-[10px] transition-colors',
+                'flex-1 flex flex-col items-center py-2.5 gap-0.5 text-[10px] transition-all min-h-[52px] active:scale-95',
                 isActive ? 'text-[#e7e9ea]' : 'text-[#71767b]',
               )
             }
           >
-            <Icon size={22} />
-            <span>{label}</span>
+            {({ isActive }) => (
+              <>
+                <span className={cn('p-1 rounded-xl transition-colors', isActive && 'bg-[#1d9bf0]/10')}>
+                  <Icon size={22} />
+                </span>
+                <span>{label}</span>
+              </>
+            )}
           </NavLink>
         ))}
       </nav>

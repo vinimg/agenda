@@ -10,16 +10,26 @@ export function AuthPage() {
   const [loading, setLoading] = useState(false)
   const [signupDone, setSignupDone] = useState(false)
 
+  function translateError(err: string): string {
+    if (err.includes('Invalid login credentials')) return 'Email ou senha incorretos'
+    if (err.includes('Email not confirmed')) return 'Confirme seu email antes de entrar'
+    if (err.includes('User already registered')) return 'Email já cadastrado. Tente entrar.'
+    if (err.includes('Password should be at least')) return 'Senha deve ter pelo menos 6 caracteres'
+    if (err.includes('Unable to validate email')) return 'Email inválido'
+    if (err.includes('not configured')) return 'Serviço indisponível. Tente novamente.'
+    return err
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError(null)
     setLoading(true)
     if (mode === 'login') {
       const err = await signIn(email, password)
-      if (err) setError(err)
+      if (err) setError(translateError(err))
     } else {
       const err = await signUp(email, password)
-      if (err) setError(err)
+      if (err) setError(translateError(err))
       else setSignupDone(true)
     }
     setLoading(false)

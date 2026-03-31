@@ -112,7 +112,7 @@ function scheduleLabel(habit: Habit): string {
 
 // ─── Main page ────────────────────────────────────────────────────────────────
 export function HabitsPage() {
-  const { habits, load } = useHabitStore()
+  const { habits, load, loading } = useHabitStore()
   const { openHabitModal, closeHabitModal, habitModalOpen } = useUIStore()
   const [weekEntries, setWeekEntries] = useState<HabitEntry[]>([])
   const [allEntries, setAllEntries] = useState<HabitEntry[]>([])
@@ -162,11 +162,20 @@ export function HabitsPage() {
         </button>
       </div>
 
-      {habits.length === 0 ? (
-        <p className="text-[#536471] text-sm text-center py-16">
-          Nenhum hábito ainda.<br />
-          <span className="text-[#71767b]">Adicione um para começar a evoluir.</span>
-        </p>
+      {loading ? (
+        <div className="border border-[#2f3336] rounded-xl overflow-hidden">
+          {[1, 2, 3].map(i => (
+            <div key={i} className="flex items-center gap-3 px-4 py-3 border-b border-[#2f3336] last:border-0">
+              <div className="w-8 h-8 rounded-full bg-[#2f3336] animate-pulse shrink-0" />
+              <div className="flex-1 h-4 rounded bg-[#2f3336] animate-pulse" />
+            </div>
+          ))}
+        </div>
+      ) : habits.length === 0 ? (
+        <div className="flex flex-col items-center py-16 text-[#71767b]">
+          <span className="text-3xl mb-3">🔁</span>
+          <p className="text-sm text-center">Nenhum hábito ainda.<br />Toque em + para criar.</p>
+        </div>
       ) : (
         <div className="flex flex-col gap-3">
           {topLevel.map(habit => {

@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { AppShell } from '@/components/layout/AppShell'
+import { InstallPrompt } from '@/components/InstallPrompt'
 import { TodayPage } from '@/pages/TodayPage'
 import { CalendarPage } from '@/pages/CalendarPage'
 import { TasksPage } from '@/pages/TasksPage'
@@ -35,6 +36,7 @@ export default function App() {
 
   return (
     <BrowserRouter>
+      <InstallPrompt />
       <Routes>
         <Route element={<AppShell />}>
           <Route index element={<TodayPage />} />
