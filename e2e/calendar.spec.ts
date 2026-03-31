@@ -62,11 +62,15 @@ test.describe('Calendar page', () => {
   })
 
   test('can navigate to next month', async ({ page }) => {
+    const months = ['January','February','March','April','May','June','July','August','September','October','November','December']
+    const currentMonthName = await page.evaluate(() => {
+      const m = ['January','February','March','April','May','June','July','August','September','October','November','December']
+      return m[new Date().getMonth()]
+    })
+    const nextMonthName = months[(months.indexOf(currentMonthName) + 1) % 12]
     await page.locator('button').filter({ has: page.locator('svg[class*="lucide-chevron-right"], svg') }).nth(1).click()
     await page.waitForTimeout(400)
-    const nextMonth = new Date(new Date().setMonth(new Date().getMonth() + 1))
-    const months = ['January','February','March','April','May','June','July','August','September','October','November','December']
-    await expect(page.getByText(months[nextMonth.getMonth()])).toBeVisible()
+    await expect(page.getByText(nextMonthName)).toBeVisible()
   })
 
   test('can navigate back to current month', async ({ page }) => {
