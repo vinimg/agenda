@@ -4,6 +4,7 @@ import { useTaskStore } from '@/store/taskStore'
 import { useUIStore } from '@/store/uiStore'
 import { TaskItem } from '@/components/tasks/TaskItem'
 import { TaskForm } from '@/components/tasks/TaskForm'
+import { GithubTaskBadge } from '@/components/tasks/GithubTaskBadge'
 import { scoreTask } from '@/services/priorityScore'
 import type { Task } from '@/models'
 
@@ -29,10 +30,14 @@ export function TasksPage() {
   const activeTasks = tasks.filter(t => t.status !== 'done' && t.status !== 'cancelled')
   const done = tasks.filter(t => t.status === 'done')
 
-  const doFirst = activeTasks.filter(t => scoreTask(t).category === 'do-first')
-  const quickWin = activeTasks.filter(t => scoreTask(t).category === 'quick-win')
-  const schedule = activeTasks.filter(t => scoreTask(t).category === 'schedule')
-  const fillLater = activeTasks.filter(t => scoreTask(t).category === 'fill-later')
+  const githubTasks = activeTasks.filter(t => t.source === 'github')
+  const manualTasks = activeTasks.filter(t => t.source !== 'github')
+  const queued = githubTasks.filter(t => t.queuedForClaude)
+
+  const doFirst  = manualTasks.filter(t => scoreTask(t).category === 'do-first')
+  const quickWin = manualTasks.filter(t => scoreTask(t).category === 'quick-win')
+  const schedule = manualTasks.filter(t => scoreTask(t).category === 'schedule')
+  const fillLater = manualTasks.filter(t => scoreTask(t).category === 'fill-later')
 
   const Section = ({
     emoji, title, subtitle, items, accent,
@@ -79,6 +84,29 @@ export function TasksPage() {
           <Plus size={16} /> New
         </button>
       </div>
+
+      {githubTasks.length > 0 && (
+        <section className="mb-6">
+          <div className="flex items-center gap-2 mb-2 px-1">
+            <span className="text-xs font-mono bg-[#2f3336] text-[#71767b] px-1.5 py-0.5 rounded">GH</span>
+            <h2 className="text-[#e7e9ea] text-sm font-semibold uppercase tracking-wider">GitHub</h2>
+            <span className="text-[#71767b] text-xs">{githubTasks.length} abertos</span>
+            {queued.length > 0 && (
+              <span className="ml-auto text-[10px] px-2 py-0.5 rounded-full bg-[#1d9bf018] border border-[#1d9bf030] text-[#1d9bf0]">
+                {queued.length} na fila
+              </span>
+            )}
+          </div>
+          <div className="divide-y divide-[#2f3336] border border-[#2f3336] rounded-xl overflow-hidden">
+            {githubTasks.map(task => (
+              <div key={task.id} className="px-4 py-3">
+                <TaskItem task={task} />
+                <GithubTaskBadge task={task} />
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
       <Section emoji="🔴" title="Faz Agora" subtitle="urgente + difícil" items={doFirst} accent="#f4212e" />
       <Section emoji="🟠" title="Quick Wins" subtitle="urgente + fácil" items={quickWin} accent="#ffad1f" />
