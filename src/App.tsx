@@ -11,6 +11,7 @@ import { AuthPage } from '@/pages/AuthPage'
 import { useAuthStore } from '@/store/authStore'
 import { isOfflineMode } from '@/lib/supabase'
 import { pullFromSupabase } from '@/services/sync'
+import { syncGithubTasks } from '@/services/githubSync'
 
 export default function App() {
   const { user, loading, init } = useAuthStore()
@@ -20,6 +21,10 @@ export default function App() {
   // Pull from Supabase whenever a user session becomes available
   useEffect(() => {
     if (user) pullFromSupabase(user.id)
+  }, [user?.id])
+
+  useEffect(() => {
+    if (user) syncGithubTasks(user.id)
   }, [user?.id])
 
   if (loading) {
