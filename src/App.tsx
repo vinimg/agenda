@@ -24,10 +24,11 @@ export default function App() {
   }, [user?.id])
 
   useEffect(() => {
-    if (user) syncGithubTasks(user.id).then(() => {
+    if (loading) return
+    syncGithubTasks(user?.id ?? null).then(() => {
       import('@/store/taskStore').then(({ useTaskStore }) => useTaskStore.getState().load())
     })
-  }, [user?.id])
+  }, [loading, user?.id])
 
   if (loading) {
     return (

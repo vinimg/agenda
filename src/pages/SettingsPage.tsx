@@ -23,10 +23,6 @@ export function SettingsPage() {
         </div>
       )}
 
-      <div className="border border-[#2f3336] rounded-xl p-4 text-[#71767b] text-sm">
-        <p>Supabase sync and account settings coming soon.</p>
-        <p className="mt-2">Data is stored locally in your browser (IndexedDB).</p>
-      </div>
     </div>
   )
 }
