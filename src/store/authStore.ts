@@ -10,6 +10,7 @@ interface AuthState {
   init: () => Promise<void>
   signIn: (email: string, password: string) => Promise<string | null>
   signUp: (email: string, password: string) => Promise<string | null>
+  resetPassword: (email: string) => Promise<string | null>
   signOut: () => Promise<void>
 }
 
@@ -41,6 +42,12 @@ export const useAuthStore = create<AuthState>((set) => ({
   signUp: async (email, password) => {
     if (!supabase) return 'Supabase not configured'
     const { error } = await supabase.auth.signUp({ email, password })
+    return error?.message ?? null
+  },
+
+  resetPassword: async (email) => {
+    if (!supabase) return 'Supabase not configured'
+    const { error } = await supabase.auth.resetPasswordForEmail(email)
     return error?.message ?? null
   },
 
