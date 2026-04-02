@@ -72,7 +72,19 @@ async function deduplicateByRemoteId(): Promise<void> {
   if (toDelete.length) await db.tasks.bulkDelete(toDelete)
 }
 
+let _syncing = false
+
 export async function syncGithubTasks(userId: string | null): Promise<void> {
+  if (_syncing) return
+  _syncing = true
+  try {
+    await _doSync(userId)
+  } finally {
+    _syncing = false
+  }
+}
+
+async function _doSync(userId: string | null): Promise<void> {
   const res = await fetch('/api/github-queue')
   if (!res.ok) return
   const { issues, prs } = await res.json() as { issues: GithubItem[]; prs: GithubItem[] }
