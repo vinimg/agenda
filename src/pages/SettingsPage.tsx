@@ -1,4 +1,5 @@
 import { useAuthStore } from '@/store/authStore'
+import { TokenDashboard } from '@/components/settings/TokenDashboard'
 
 export function SettingsPage() {
   const { user, signOut } = useAuthStore()
@@ -6,6 +7,8 @@ export function SettingsPage() {
   return (
     <div className="max-w-xl mx-auto px-4 pt-6 pb-24 md:pb-8">
       <h1 className="text-[#e7e9ea] text-2xl font-bold mb-6">Settings</h1>
+
+      <TokenDashboard />
 
       {user && (
         <div className="border border-[#2f3336] rounded-xl p-4 mb-4">

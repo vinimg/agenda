@@ -24,6 +24,13 @@ export interface Task {
   completedAt?: string
   syncedAt?: string
   remoteId?: string
+  // GitHub integration
+  source?: 'manual' | 'github'
+  githubRepo?: string
+  githubNumber?: number
+  githubType?: 'issue' | 'pr_review'
+  queuedForClaude?: boolean
+  preferredModel?: 'claude' | 'codex' | 'gemini'
 }
 
 export type FrequencyType = 'daily' | 'weekly' | 'monthly' | 'custom'

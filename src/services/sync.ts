@@ -47,6 +47,12 @@ export async function pullFromSupabase(userId: string): Promise<void> {
         scheduledDate: r.scheduled_date, scheduledTime: r.scheduled_time,
         estimatedMinutes: r.estimated_minutes, location: r.location,
         tags: r.tags, color: r.color, completedAt: r.completed_at,
+        source: r.source ?? 'manual',
+        githubRepo: r.github_repo ?? undefined,
+        githubNumber: r.github_number ?? undefined,
+        githubType: r.github_type ?? undefined,
+        queuedForClaude: r.queued_for_claude ?? false,
+        preferredModel: r.preferred_model ?? 'claude',
         createdAt: r.created_at, updatedAt: r.updated_at, remoteId: r.id,
       } as Task
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -83,6 +89,12 @@ export async function pushTask(task: Task, userId: string): Promise<void> {
       scheduled_date: task.scheduledDate, scheduled_time: task.scheduledTime,
       estimated_minutes: task.estimatedMinutes, location: task.location,
       tags: task.tags, color: task.color, completed_at: task.completedAt,
+      source: task.source ?? 'manual',
+      github_repo: task.githubRepo ?? null,
+      github_number: task.githubNumber ?? null,
+      github_type: task.githubType ?? null,
+      queued_for_claude: task.queuedForClaude ?? false,
+      preferred_model: task.preferredModel ?? 'claude',
       created_at: task.createdAt, updated_at: task.updatedAt,
     }).select('id').single()
     if (data?.id && !task.remoteId) await db.tasks.update(task.id, { remoteId: data.id })
