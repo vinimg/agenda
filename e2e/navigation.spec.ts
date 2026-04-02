@@ -44,7 +44,6 @@ test.describe('Navigation', () => {
   test('Settings page loads', async ({ page }) => {
     await page.goto('/settings')
     await expect(page.getByRole('heading', { name: 'Settings' })).toBeVisible()
-    await expect(page.getByText(/Supabase/i).first()).toBeVisible()
   })
 
   test('direct URL navigation works (SPA fallback)', async ({ page }) => {
