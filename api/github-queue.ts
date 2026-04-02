@@ -25,15 +25,20 @@ async function fetchGithub(query: string): Promise<GithubItem[]> {
 }
 
 export default async function handler(_req: VercelRequest, res: VercelResponse) {
-  if (!GH_TOKEN || !GH_USER) {
-    console.error('Missing env vars — GITHUB_TOKEN:', !!GH_TOKEN, 'GITHUB_USERNAME:', !!GH_USER)
-    return res.status(500).json({ error: 'GITHUB_TOKEN or GITHUB_USERNAME not configured' })
+  const hasToken = !!GH_TOKEN
+  const hasUser = !!GH_USER
+
+  if (!hasToken || !hasUser) {
+    return res.status(500).json({ error: 'missing env vars', hasToken, hasUser })
   }
 
-  const [issues, prs] = await Promise.all([
-    fetchGithub(`assignee:${GH_USER} type:issue state:open`),
-    fetchGithub(`author:${GH_USER} type:pr state:open`),
-  ])
+  const query = `assignee:${GH_USER} type:issue state:open`
+  const url = `https://api.github.com/search/issues?q=${encodeURIComponent(query)}&per_page=5`
+  const ghRes = await fetch(url, {
+    headers: { Authorization: `Bearer ${GH_TOKEN}`, Accept: 'application/vnd.github+json' },
+  })
+  const status = ghRes.status
+  const body = await ghRes.text()
 
-  res.status(200).json({ issues, prs })
+  res.status(200).json({ debug: true, status, user: GH_USER, body: body.slice(0, 500) })
 }
