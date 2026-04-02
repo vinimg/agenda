@@ -28,6 +28,11 @@ class AgendaDatabase extends Dexie {
       habits:       '++id, isActive, startDate, parentHabitId, attribute',
       habitEntries: '++id, habitId, date, status, [habitId+date]',
     })
+    this.version(5).stores({
+      tasks:        '++id, status, priority, urgency, difficulty, dueDate, scheduledDate, habitId, *tags, source, queuedForClaude, remoteId',
+      habits:       '++id, isActive, startDate, parentHabitId, attribute',
+      habitEntries: '++id, habitId, date, status, [habitId+date]',
+    })
   }
 }
 
