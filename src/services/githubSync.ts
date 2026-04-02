@@ -33,7 +33,7 @@ async function pushGithubTask(task: Task, userId: string): Promise<void> {
       preferred_model: task.preferredModel ?? 'claude',
       created_at: task.createdAt,
       updated_at: task.updatedAt,
-    }, { onConflict: 'github_remote_id' }).select('id').single()
+    }, { onConflict: 'user_id,github_remote_id' }).select('id').single()
     if (data?.id) await db.tasks.update(task.id, { remoteId: data.id })
   } catch { /* non-fatal */ }
 }
