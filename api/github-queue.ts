@@ -16,13 +16,17 @@ async function fetchGithub(query: string): Promise<GithubItem[]> {
   const res = await fetch(url, {
     headers: { Authorization: `Bearer ${GH_TOKEN}`, Accept: 'application/vnd.github+json' },
   })
-  if (!res.ok) return []
+  if (!res.ok) {
+    console.error('GitHub API error', res.status, await res.text())
+    return []
+  }
   const data = await res.json() as { items?: GithubItem[] }
   return data.items ?? []
 }
 
 export default async function handler(_req: VercelRequest, res: VercelResponse) {
   if (!GH_TOKEN || !GH_USER) {
+    console.error('Missing env vars — GITHUB_TOKEN:', !!GH_TOKEN, 'GITHUB_USERNAME:', !!GH_USER)
     return res.status(500).json({ error: 'GITHUB_TOKEN or GITHUB_USERNAME not configured' })
   }
 
