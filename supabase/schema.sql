@@ -23,6 +23,12 @@ create table if not exists public.tasks (
   tags              text[],
   color             text,
   completed_at      timestamptz,
+  source            text not null default 'manual',
+  github_repo       text,
+  github_number     integer,
+  github_type       text,
+  queued_for_claude boolean not null default false,
+  preferred_model   text not null default 'claude',
   created_at        timestamptz not null default now(),
   updated_at        timestamptz not null default now()
 );

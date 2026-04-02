@@ -1,5 +1,4 @@
 import { db } from '@/db'
-import { pushTask } from '@/services/sync'
 import type { Task } from '@/models'
 
 interface GithubItem {
@@ -14,7 +13,7 @@ function repoFromUrl(url: string): string {
   return url.replace('https://api.github.com/repos/', '')
 }
 
-export async function syncGithubTasks(userId: string | null): Promise<void> {
+export async function syncGithubTasks(_userId: string | null): Promise<void> {
   const res = await fetch('/api/github-queue')
   if (!res.ok) return
   const { issues, prs } = await res.json() as { issues: GithubItem[]; prs: GithubItem[] }
@@ -54,9 +53,7 @@ export async function syncGithubTasks(userId: string | null): Promise<void> {
         createdAt: now,
         updatedAt: now,
       }
-      const id = await db.tasks.add(task as Task)
-      const saved = await db.tasks.get(id)
-      if (saved && userId) pushTask(saved, userId)
+      await db.tasks.add(task as Task)
     }
   }
 }
